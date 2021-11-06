@@ -18,7 +18,8 @@ entity ControladorDePortao is
 		sensor_1 : in  std_logic;
 		sensor_2 : in  std_logic;
 		reset	   : in	std_logic;
-		output   : out	std_logic_vector(1 downto 0)
+		b0   		: out	std_logic;
+		b1			: out	std_logic
 	);
 
 end entity;
@@ -33,8 +34,7 @@ begin
 
 	process (clk, reset)
 	begin
-	
-		if reset = '1' then
+		if reset = '0' then
 			state <= awaiting_command;
 			
 		elsif (rising_edge(clk)) then
@@ -42,32 +42,21 @@ begin
 			case state is
 			
 				when awaiting_command=>
-				
-					if command = '1' then
-						
-						if sensor_1 = '1' then
-						
-							state <= oppening;
 							
-						elsif sensor_2 = '1' then
-						
-							state <= closing;
-							
-						else
-						
-							state <= closing;
-							
-						end if;
-						
-					else
+					if sensor_1 = '0' and sensor_2 = '1' and command = '0' then
 					
-						state <= awaiting_command;
+						state <= oppening;
+					end if;
 						
+					if sensor_2 = '0' and sensor_1 = '1' and command = '0' then
+					
+						state <= closing;
+							
 					end if;
 					
 				when oppening=>
 				
-					if sensor_2 = '1' then
+					if sensor_2 = '0'  and sensor_1 = '1' then
 						state <= awaiting_command;
 					else
 						state <= oppening;
@@ -75,12 +64,9 @@ begin
 					
 				when closing=>
 				
-					if sensor_1 = '1' then
-					
+					if sensor_1 = '0' and sensor_2 = '1' then
 						state <= awaiting_command;
-						
 					else
-					
 						state <= closing;
 						
 					end if;
@@ -93,11 +79,14 @@ begin
 	begin
 		case state is
 			when awaiting_command =>
-				output <= "11";
+				b0 <= '1';
+				b1 <= '1';
 			when oppening =>
-				output <= "10";
+				b0 <= '1';
+				b1 <= '0';
 			when closing =>
-				output <= "01";
+				b0 <= '0';
+				b1 <= '1';
 		end case;
 	end process;
 
