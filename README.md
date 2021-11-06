@@ -1,6 +1,6 @@
 # Controlador de Portao em um FPGA
 
-Implementação de um controlador de motor de portão de garagem com sensores em um FPGA.
+Implementação de um controlador de motor de portão de garagem utilizando a palataforma Altera cyclone 5 via dev board DE0-CV.
 
 ## Equipe:
 
